@@ -1,18 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
-import { ReadAdmiralState, RearAdmrlClient } from '../../http/rear-admrl-client/rear-admrl-client';
+import { environment } from '../../../environments/environment';
+import { RearAdmiralState, RearAdmrlClient } from '../../http/rear-admrl-client/rear-admrl-client';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommandService {
   private _rearAdmrlClients: RearAdmrlClient[] = [];
-  private _clientStates: ReadAdmiralState[] = [];
-  private _stateSubject = new ReplaySubject<ReadAdmiralState[]>(1);
+  private _clientStates: RearAdmiralState[] = [];
+  private _stateSubject = new ReplaySubject<RearAdmiralState[]>(1);
 
 
   constructor() {
-    ['192.168.1.49:4280'].forEach(url => {
+    const targets = [];
+    if (environment.production) {
+      targets.push(location.host);
+    } else {
+      targets.push(...environment.devHosts);
+    }
+    console.log(targets);
+    targets.forEach(url => {
       const index = this._rearAdmrlClients.length;
       const client = new RearAdmrlClient(url);
       client.connect();
@@ -29,11 +37,27 @@ export class CommandService {
     this._rearAdmrlClients[0].installTooling();
   }
 
+  updatePrinterPorts() {
+    this._rearAdmrlClients[0].updatePrinterPorts();
+  }
+
+  turnOnAllPrinters() {
+    this._rearAdmrlClients[0].turnOnAllPrinters();
+  }
+
+  turnOffAllPrinters() {
+    this._rearAdmrlClients[0].turnOffAllPrinters();
+  }
+
+  readKConfig() {
+    this._rearAdmrlClients[0].readKConfig();
+  }
+
   private stateUpdated() {
     this._stateSubject.next(this._clientStates);
   }
 
-  get states(): Observable<ReadAdmiralState[]> {
+  get states(): Observable<RearAdmiralState[]> {
     return this._stateSubject;
   }
 

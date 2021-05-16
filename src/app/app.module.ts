@@ -4,7 +4,8 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { SetupPageComponent } from './pages/setup-page/setup-page.component';
-import { ConsoleComponent } from './components/console/console/console.component';
+import { ConsoleComponent } from './components/console/console.component';
+import { NewPrinterComponent } from './components/new-printer/new-printer.component';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { ConsoleComponent } from './components/console/console/console.component
   declarations: [
     AppComponent,
     SetupPageComponent,
-    ConsoleComponent
+    ConsoleComponent,
+    NewPrinterComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

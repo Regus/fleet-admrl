@@ -1,0 +1,9 @@
+<div class="container">
+  Port:
+  <select>
+    <option *ngFor="let port of ports">{{ port.name }}</option>
+  </select>
+  <pre class="config">
+    {{ kconfig }}
+  </pre>
+</div>

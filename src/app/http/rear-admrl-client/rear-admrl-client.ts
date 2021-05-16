@@ -1,12 +1,20 @@
 import { Observable, ReplaySubject } from 'rxjs';
+import { KConfigParser } from '../../services/kconfig/kconfig-parser';
+import { KConfig } from '../../services/kconfig/KConfigParser.types';
 
 export interface ConsoleLine {
   id: number;
   text: string;
 }
 
-export interface ReadAdmiralState {
+export interface PrinterPort {
+  name: string;
+}
+
+export interface RearAdmiralState {
+  kconfig: KConfig;
   consoleBuffer: ConsoleLine[];
+  printerPorts: PrinterPort[]
 }
 
 export class RearAdmrlClient {
@@ -15,13 +23,17 @@ export class RearAdmrlClient {
   private _connected = false;
   private _connectRetryActive = false;
   private _nextLineId = 1;
+  private _kconfig = { kconfig: '', config: '' };
+  private _printerPorts: PrinterPort[] = [];
   private _consoleBuffer: ConsoleLine[] = [];
-  private _stateSubject = new ReplaySubject<ReadAdmiralState>(1);
+  private _stateSubject = new ReplaySubject<RearAdmiralState>(1);
 
   constructor(url: string) {
     this._url = url;
     this._stateSubject.next({
-      consoleBuffer: []
+      kconfig: { kconfig: '', config: '' },
+      consoleBuffer: [],
+      printerPorts: []
     });
   }
 
@@ -39,15 +51,21 @@ export class RearAdmrlClient {
     this._socket.onclose = (event) => this.onWsClose(event);
   }
 
+  private updateState() {
+    this._stateSubject.next({
+      kconfig: this._kconfig,
+      consoleBuffer: this._consoleBuffer,
+      printerPorts: this._printerPorts
+    });
+
+  }
+
   private appendConsoleLine(text: string) {
     this._consoleBuffer.push({
       id: this._nextLineId++,
       text: text
     });
-    // console.log(this._consoleBuffer);
-    this._stateSubject.next({
-      consoleBuffer: this._consoleBuffer
-    });
+    this.updateState();
   }
 
   private async retryConnnect() {
@@ -73,8 +91,18 @@ export class RearAdmrlClient {
 
   private onWsMessage(event: MessageEvent<any>): void {
     var message = JSON.parse(event.data);
+    console.log(message);
     if (message.type === "console") {
       this.appendConsoleLine(message.data);
+    }
+    if (message.type === "printer-ports") {
+      this._printerPorts = message.data.map((name: string) => ({ name }));
+      this.updateState();
+    }
+    if (message.type === "kconfig") {
+      this._kconfig = message.data;
+      new KConfigParser(this._kconfig);
+      this.updateState();
     }
   }
 
@@ -88,10 +116,26 @@ export class RearAdmrlClient {
   }
 
   installTooling() {
-    this._socket.send('install-tooling');
+    this._socket.send('installer.install-tooling');
   }
 
-  get state(): Observable<ReadAdmiralState> {
+  updatePrinterPorts() {
+    this._socket.send('printer-setup.list-ports');
+  }
+
+  turnOnAllPrinters() {
+    this._socket.send('power.turn-on-all');
+  }
+
+  turnOffAllPrinters() {
+    this._socket.send('power.turn-off-all');
+  }
+
+  readKConfig() {
+    this._socket.send('printer-setup.get-kconfig');
+  }
+
+  get state(): Observable<RearAdmiralState> {
     return this._stateSubject;
   }
 }

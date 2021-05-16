@@ -1,5 +1,5 @@
 import { AfterViewChecked, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { ConsoleLine } from '../../../http/rear-admrl-client/rear-admrl-client';
+import { ConsoleLine } from '../../http/rear-admrl-client/rear-admrl-client';
 
 @Component({
   selector: 'app-console',

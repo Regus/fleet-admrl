@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { ConsoleLine, ReadAdmiralState } from '../../http/rear-admrl-client/rear-admrl-client';
+import { ConsoleLine, RearAdmiralState } from '../../http/rear-admrl-client/rear-admrl-client';
 import { CommandService } from '../../services/command/command.service';
 
 @Component({
@@ -18,13 +18,35 @@ export class SetupPageComponent {
     this.commandService.installTooling();
   }
 
-  get states(): Observable<ReadAdmiralState[]> {
+  updatePrinterPorts() {
+    this.commandService.updatePrinterPorts();
+  }
+
+  turnOnAllPrinters() {
+    this.commandService.turnOnAllPrinters();
+  }
+
+  turnOffAllPrinters() {
+    this.commandService.turnOffAllPrinters();
+  }
+
+  readKConfig() {
+    this.commandService.readKConfig();
+  }
+
+  get states(): Observable<RearAdmiralState[]> {
     return this.commandService.states;
   }
 
   get consoleBuffer(): Observable<ConsoleLine[]> {
     return this.commandService.states.pipe(
       map(states => states[0].consoleBuffer),
+    );
+  }
+
+  get state(): Observable<RearAdmiralState> {
+    return this.commandService.states.pipe(
+      map(states => states[0]),
     );
   }
 }

@@ -1,4 +1,10 @@
+
+<app-new-printer [state]="state | async"></app-new-printer>
 <button (click)="installTooling()">install klipper and moonraker</button>
+<button (click)="updatePrinterPorts()">update printer ports</button>
+<button (click)="turnOnAllPrinters()">turn ON printers</button>
+<button (click)="turnOffAllPrinters()">turn OFF printers</button>
+<button (click)="readKConfig()">read config</button>
 <app-console
   [lines]="consoleBuffer | async"
 ></app-console>
