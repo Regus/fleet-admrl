@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .icon {
+    width:40px;
+    height:40px;
+    margin-right: 5px;
+    stroke: greenyellow;
+
+    &--disabled {
+      stroke: grey;
+    }
+  }
+}

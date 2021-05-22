@@ -1,0 +1,38 @@
+<div class="backdrop">
+
+  <div class="dialog">
+    <div class="content">
+      <div class="printer-setup">
+        <div>
+          Name: <input type="text" />
+        </div>
+        <div>
+          Host:
+          <select [(ngModel)]="activeStateId" [ngModelOptions]="{standalone: true}">
+            <option *ngFor="let host of hosts">{{ host.name }}</option>
+          </select>
+        </div>
+
+        <div>
+          Serial Port:
+          <select>
+            <option *ngFor="let port of ports">{{ port.name }}</option>
+          </select>
+        </div>
+
+        <app-kconfig [state]="state"></app-kconfig>
+        <div>
+          <button>Flash Printer</button>
+        </div>
+        <div>
+          <button>Install Klipper & Moonraker</button>
+        </div>
+      </div>
+      <app-console class="console" [lines]="lines"></app-console>
+    </div>
+    <div class="footer">
+      <button (click)="closeDialog()">close</button>
+    </div>
+  </div>
+
+</div>

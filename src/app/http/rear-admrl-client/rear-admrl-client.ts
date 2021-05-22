@@ -1,6 +1,5 @@
 import { Observable, ReplaySubject } from 'rxjs';
 import { KConfigParser } from '../../services/kconfig/kconfig-parser';
-import { KConfig } from '../../services/kconfig/KConfigParser.types';
 
 export interface ConsoleLine {
   id: number;
@@ -12,7 +11,9 @@ export interface PrinterPort {
 }
 
 export interface RearAdmiralState {
-  kconfig: KConfig;
+  id: string;
+  name: string;
+  kconfig?: KConfigParser;
   consoleBuffer: ConsoleLine[];
   printerPorts: PrinterPort[]
 }
@@ -24,17 +25,14 @@ export class RearAdmrlClient {
   private _connectRetryActive = false;
   private _nextLineId = 1;
   private _kconfig = { kconfig: '', config: '' };
+  private _kconfigParser: KConfigParser | undefined;
   private _printerPorts: PrinterPort[] = [];
   private _consoleBuffer: ConsoleLine[] = [];
   private _stateSubject = new ReplaySubject<RearAdmiralState>(1);
 
   constructor(url: string) {
     this._url = url;
-    this._stateSubject.next({
-      kconfig: { kconfig: '', config: '' },
-      consoleBuffer: [],
-      printerPorts: []
-    });
+    this.updateState();
   }
 
   async connect(): Promise<void> {
@@ -53,7 +51,9 @@ export class RearAdmrlClient {
 
   private updateState() {
     this._stateSubject.next({
-      kconfig: this._kconfig,
+      id: this._url,
+      name: this._url,
+      kconfig: this._kconfigParser,
       consoleBuffer: this._consoleBuffer,
       printerPorts: this._printerPorts
     });
@@ -101,7 +101,7 @@ export class RearAdmrlClient {
     }
     if (message.type === "kconfig") {
       this._kconfig = message.data;
-      new KConfigParser(this._kconfig);
+      this._kconfigParser = new KConfigParser(this._kconfig);
       this.updateState();
     }
   }

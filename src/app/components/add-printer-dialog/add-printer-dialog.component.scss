@@ -1,0 +1,50 @@
+.backdrop {
+  position: absolute;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(180, 180, 180, 0.5);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .dialog {
+    background-color: white;
+    color: black;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 2px 2px 2px black;
+
+    .footer {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: flex-end;
+      padding: 10px;
+    }
+
+    .content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .printer-setup {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .console {
+        height: 150px;
+      }
+    }
+
+  }
+
+}

@@ -4,12 +4,13 @@ button {
 }
 
 .console {
+  height: 100%;
+  width: 100%;
   font-family: Consolas, Courier New;
-  width: 800px;
-  height: 400px;
   background-color: black;
   color: lightgray;
   overflow: auto;
   padding: 5px;
   white-space: nowrap;
+  box-sizing: border-box;
 }

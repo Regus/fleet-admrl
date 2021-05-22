@@ -1,0 +1,18 @@
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .menu {
+    background-color: greenyellow;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .content {
+    flex-grow: 1;
+
+  }
+}

@@ -11,9 +11,13 @@ html {
 
 body {
   height: 100%;
-  // background-color: black;
+  background-color: black;
   color:greenyellow;
   font-family: Consolas;
   margin: 0;
   padding: 0;
+}
+
+select {
+  font-family: Consolas;
 }

@@ -1,0 +1,12 @@
+<div class="container">
+  <div>
+    <div *ngFor="let visual of visuals; trackBy trackByVisual ">
+      <app-kconfig-toggle *ngIf="visual.type === 'toggle'" [visual]="visual"></app-kconfig-toggle>
+      <app-kconfig-choice *ngIf="visual.type === 'choice'" [visual]="visual"></app-kconfig-choice>
+      <app-kconfig-text *ngIf="visual.type === 'text'" [visual]="visual" [subType]="visual.type"></app-kconfig-text>
+      <app-kconfig-text *ngIf="visual.type === 'integer'" [visual]="visual" [subType]="visual.type"></app-kconfig-text>
+      <app-kconfig-text *ngIf="visual.type === 'hex'" [visual]="visual" [subType]="visual.type"></app-kconfig-text>
+    </div>
+  </div>
+  <!-- <pre>{{ output }}</pre> -->
+</div>

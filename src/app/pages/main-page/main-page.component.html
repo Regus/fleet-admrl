@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="menu">
+    <button>Setup</button>
+    <button (click)="openAddPrinterDialog()">Add Printer</button>
+  </div>
+  <div class="content">
+
+    <app-printer-overview></app-printer-overview>
+
+  </div>
+</div>
+
+<app-add-printer-dialog
+  *ngIf="showAddPrinterDialog"
+  [states]="state | async"
+  (close)="closeAddPrinterDialog()"
+></app-add-printer-dialog>

@@ -1,0 +1,5 @@
+<div>
+  {{ title }}: <select [(ngModel)]="chosen" [ngModelOptions]="{standalone: true}">
+    <option *ngFor="let option of options; trackBy trackByVisualOption" [value]="option.id">{{ option.name }}</option>
+  </select>
+</div>

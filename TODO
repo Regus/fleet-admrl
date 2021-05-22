@@ -1,0 +1,102 @@
+UI:
+  printer-details
+    print-status
+      elapsed
+      remaining
+      total
+      print start time
+      estimated end time
+      progress indicator
+      current gcode file
+      pause
+    motion control
+      home all
+      x,y,z home
+      x,y,z +/-
+      x,y,z current position
+      x,y,z set position
+      disable currently acting axes
+      extrude
+      retract
+      feed rate
+      flow rate
+    motion limits
+      max speed
+      max accel
+      max decel
+      max corner
+    temp control
+      extruder
+        current temp
+        target temp
+      bed
+        current temp
+        target temp
+    klipper console
+      show output
+      allow executing commands
+      scroll to end
+        manual
+        automatic (when at end stay at end)
+    gcode files
+      show existing files
+        name
+        last modified
+        filter by text name
+        sort by last modified
+  Add printer
+    choose host/port
+    configure kconfig
+      invent prettier UI for kconfig
+    flash printer
+    install klipper/moonraker
+    configure klipper
+    configure moonraker
+    rear-admrl console
+  Modify/Update printer
+    modify kconfig
+    flash printer
+    configure klipper
+    configure moonraker
+    rear-admrl console
+  Add Host
+    add target rear-admrl
+  Initial Setup
+    when tooling not installed show get started wizard
+      install tooling
+      show console
+  Update self
+    show icon when newer version available of fleet-admrl
+    allow executing script that
+      pulls
+      builds
+      copies
+      reloads
+  Update tools
+    show icon on printer when new version of rear-admrl available
+      allow executing script that
+        pulls
+        restarts service
+    show icon on printer when new version of klipper available
+      allow executing script that
+        warns if not all attached printers are ready
+        stops all moonrakers on rear-admrl
+        stops all klippers on rear-admrl
+        pulls klipper
+        runs install script
+        builds new firmware
+        flashes all active printers
+        starts all klippers on rear-admrl
+        starts all moonrakers on rear-admrl
+    show icon on printer when new version of moonraker available
+      allow executing script that
+        stops all moonrakers on rear-admrl
+        stops all klippers on rear-admrl
+        pulls moonraker
+        runs install script
+        starts all klippers on rear-admrl
+        starts all moonrakers on rear-admrl
+
+scripts
+  install rear-admrl
+  isntall fleet-admrl

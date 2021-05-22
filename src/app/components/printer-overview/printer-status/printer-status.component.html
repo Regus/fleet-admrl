@@ -1,0 +1,20 @@
+<div class="container" [class.container--disabled]="disabled">
+  <div class="name">{{ name }}</div>
+  <div class="status">
+    <div class="top-row">
+      <div class="left-column">
+        <app-hotend-status [componentUseCase]="componentUseCase"></app-hotend-status>
+        <app-bed-status [componentUseCase]="componentUseCase"></app-bed-status>
+      </div>
+      <div class="right-column">
+        <app-fan-status [componentUseCase]="componentUseCase"></app-fan-status>
+        <app-feed-rate [componentUseCase]="componentUseCase"></app-feed-rate>
+      </div>
+    </div>
+    <app-progress-bar [componentUseCase]="componentUseCase"></app-progress-bar>
+    <div class="bottom-row">
+      <app-tool-position [componentUseCase]="componentUseCase"></app-tool-position>
+      <app-elapsed-time [componentUseCase]="componentUseCase"></app-elapsed-time>
+    </div>
+  </div>
+</div>

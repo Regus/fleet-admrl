@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+
+  .printer-info-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    flex-flow: wrap;
+  }
+}
