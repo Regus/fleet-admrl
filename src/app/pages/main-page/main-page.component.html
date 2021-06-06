@@ -12,6 +12,6 @@
 
 <app-add-printer-dialog
   *ngIf="showAddPrinterDialog"
-  [states]="state | async"
+  [addPrinterUseCase]="addPrinterUseCase | async"
   (close)="closeAddPrinterDialog()"
 ></app-add-printer-dialog>

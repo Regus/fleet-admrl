@@ -5,7 +5,7 @@ export interface SetupUseCaseActions {
 
 export interface SetupUseCaseModel {
   readonly toolingInstalled: boolean;
-  readonly installationInProgress: boolean;
+  readonly busy: boolean;
 }
 
 export class SetupUseCase {
@@ -26,7 +26,7 @@ export class SetupUseCase {
   }
 
   get installationInProgress(): boolean {
-    return this.model.toolingInstalled;
+    return this.model.busy;
   }
 
 }

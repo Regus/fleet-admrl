@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ConsoleLine, PrinterPort, RearAdmiralState } from '../../http/rear-admrl-client/rear-admrl-client';
 import { CommandService } from '../../services/command/command.service';
+import { AddPrinterUseCase } from '../../usecases/add-printer.usecase';
 
 export interface Host {
   id: string;
@@ -12,45 +13,52 @@ export interface Host {
   templateUrl: './add-printer-dialog.component.html',
   styleUrls: ['./add-printer-dialog.component.scss']
 })
-export class AddPrinterDialogComponent implements OnInit {
-  @Input() states: RearAdmiralState[] | null = null;
+export class AddPrinterDialogComponent {
+  @Input() addPrinterUseCase: AddPrinterUseCase | null = null;
   @Input() activeStateId?: string;
   @Output() close = new EventEmitter();
+  skipFirmware = false;
 
-  constructor(
-    private commandService: CommandService
-  ) { }
+  activePage = 'info';
 
-  ngOnInit(): void {
-    console.log('init');
-    this.commandService.updatePrinterPorts();
-    this.commandService.readKConfig();
+  constructor() { }
+
+  executeAddPrinter() {
+    this.addPrinterUseCase?.executeInstall();
   }
 
   closeDialog() {
     this.close.emit();
   }
 
-  get hosts(): Host[] {
-    return (this.states ?? []).map(state => ({
-      id: state.id,
-      name: state.name
-    }));
+  activatePage(page: string) {
+    this.activePage = page;
   }
 
-  get state(): RearAdmiralState | null {
-    if (this.states) {
-      return this.states.find(state => state.id === this.activeStateId) ?? this.states[0];
+  get name(): string {
+    return this.addPrinterUseCase?.name ?? '';
+  }
+
+  set name(value: string) {
+    if (this.addPrinterUseCase) {
+      this.addPrinterUseCase.name = value;
     }
-    return null;
+  }
+
+  get klipperConfig(): string {
+    return this.addPrinterUseCase?.klipperConfig ?? '';
+  }
+
+  get moonrakerConfig(): string {
+    return this.addPrinterUseCase?.moonrakerConfig ?? '';
   }
 
   get ports(): PrinterPort[] {
-    return this.state?.printerPorts ?? [];
+    return this.addPrinterUseCase?.ports ?? [];
   }
 
   get lines(): ConsoleLine[] {
-    return this.state?.consoleBuffer ?? [];
+    return this.addPrinterUseCase?.consoleLines ?? [];
   }
 
 }

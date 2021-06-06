@@ -19,7 +19,7 @@ export class SetupPageComponent {
   }
 
   updatePrinterPorts() {
-    this.commandService.updatePrinterPorts();
+    // this.commandService.updatePrinterPorts();
   }
 
   turnOnAllPrinters() {
@@ -31,7 +31,7 @@ export class SetupPageComponent {
   }
 
   readKConfig() {
-    this.commandService.readKConfig();
+    // this.commandService.readKConfig();
   }
 
   get states(): Observable<RearAdmiralState[]> {

@@ -2,6 +2,7 @@ import { Input } from '@angular/core';
 import { Component } from '@angular/core';
 import { RearAdmiralState } from '../../http/rear-admrl-client/rear-admrl-client';
 import { KconfigOption } from '../../services/kconfig/kconfig-parser';
+import { AddPrinterUseCase } from '../../usecases/add-printer.usecase';
 
 @Component({
   selector: 'app-kconfig',
@@ -9,16 +10,16 @@ import { KconfigOption } from '../../services/kconfig/kconfig-parser';
   styleUrls: ['./kconfig.component.scss']
 })
 export class KconfigComponent {
-  @Input() state: RearAdmiralState | null = null;
+  @Input() addPrinterUseCase: AddPrinterUseCase | null = null;
 
   constructor() { }
 
   get visuals(): KconfigOption[] {
-    return this.state?.kconfig?.visualizations ?? [];
+    return this.addPrinterUseCase?.kconfig?.visualizations ?? [];
   }
 
   get output(): string {
-    return this.state?.kconfig?.configOutput ?? '';
+    return this.addPrinterUseCase?.kconfig?.configOutput ?? '';
   }
 
   trackByVisual(index: number, visual: KconfigOption) {

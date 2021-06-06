@@ -29,12 +29,15 @@ import { TempControlComponent } from './components/printer-overview/printer-deta
 import { MotionLimitsComponent } from './components/printer-overview/printer-details/motion-limits/motion-limits.component';
 import { KlipperConsoleComponent } from './components/printer-overview/printer-details/klipper-console/klipper-console.component';
 import { GcodeFilesComponent } from './components/printer-overview/printer-details/gcode-files/gcode-files.component';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { ConfigEditorComponent } from './components/config-editor/config-editor.component';
 
 @NgModule({
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
+    MonacoEditorModule.forRoot()
   ],
   declarations: [
     AppComponent,
@@ -63,6 +66,7 @@ import { GcodeFilesComponent } from './components/printer-overview/printer-detai
     MotionLimitsComponent,
     KlipperConsoleComponent,
     GcodeFilesComponent,
+    ConfigEditorComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]

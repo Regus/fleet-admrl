@@ -1,5 +1,5 @@
 import { Observable, ReplaySubject } from 'rxjs';
-import { KConfigParser } from '../../services/kconfig/kconfig-parser';
+import { KConfig, KConfigParser } from '../../services/kconfig/kconfig-parser';
 
 export interface ConsoleLine {
   id: number;
@@ -7,28 +7,48 @@ export interface ConsoleLine {
 }
 
 export interface PrinterPort {
+  hostId: string;
+  address: string; // ip/portname
   name: string;
+  inUse: boolean;
 }
 
 export interface RearAdmiralState {
   id: string;
   name: string;
-  kconfig?: KConfigParser;
+  toolingInstalled: boolean;
+  busy: boolean;
   consoleBuffer: ConsoleLine[];
-  printerPorts: PrinterPort[]
+}
+
+export interface MessageCallback {
+  ref: number;
+  callback: (message: any) => void;
+}
+
+export interface BasicConfigSet {
+  klipper: string;
+  moonraker: string;
+}
+
+export interface PrinterInstallConfig {
+  klipper: string;
+  moonraker: string;
+  name: string;
+  port: string;
+  kconfig: string;
 }
 
 export class RearAdmrlClient {
+  private _nextRef = 1;
   private _socket!: WebSocket;
   private _url: string;
   private _connected = false;
   private _connectRetryActive = false;
   private _nextLineId = 1;
-  private _kconfig = { kconfig: '', config: '' };
-  private _kconfigParser: KConfigParser | undefined;
-  private _printerPorts: PrinterPort[] = [];
   private _consoleBuffer: ConsoleLine[] = [];
   private _stateSubject = new ReplaySubject<RearAdmiralState>(1);
+  private _callbacks: MessageCallback[] = [];
 
   constructor(url: string) {
     this._url = url;
@@ -53,18 +73,23 @@ export class RearAdmrlClient {
     this._stateSubject.next({
       id: this._url,
       name: this._url,
-      kconfig: this._kconfigParser,
+      toolingInstalled: false,
+      busy: false,
       consoleBuffer: this._consoleBuffer,
-      printerPorts: this._printerPorts
     });
 
   }
 
   private appendConsoleLine(text: string) {
-    this._consoleBuffer.push({
-      id: this._nextLineId++,
-      text: text
-    });
+    if (text === '#') {
+      this._consoleBuffer[this._consoleBuffer.length - 1].text += '#';
+    }
+    else {
+      this._consoleBuffer.push({
+        id: this._nextLineId++,
+        text: text
+      });
+    }
     this.updateState();
   }
 
@@ -80,7 +105,7 @@ export class RearAdmrlClient {
   private startRetryConnect() {
     if (!this._connectRetryActive) {
       this._connectRetryActive = true;
-      this.retryConnnect();
+      setTimeout(() => { this.retryConnnect(); }, 2000);
     }
   }
 
@@ -92,17 +117,15 @@ export class RearAdmrlClient {
   private onWsMessage(event: MessageEvent<any>): void {
     var message = JSON.parse(event.data);
     console.log(message);
+
     if (message.type === "console") {
-      this.appendConsoleLine(message.data);
+      message.data.split('\n').forEach((line: string) => this.appendConsoleLine(line));
     }
-    if (message.type === "printer-ports") {
-      this._printerPorts = message.data.map((name: string) => ({ name }));
-      this.updateState();
-    }
-    if (message.type === "kconfig") {
-      this._kconfig = message.data;
-      this._kconfigParser = new KConfigParser(this._kconfig);
-      this.updateState();
+    else {
+      const index = this._callbacks.findIndex(cb => cb.ref === message.ref);
+      const callback = this._callbacks[index];
+      this._callbacks.splice(index, 1);
+      callback.callback(message);
     }
   }
 
@@ -115,24 +138,71 @@ export class RearAdmrlClient {
     this.startRetryConnect();
   }
 
-  installTooling() {
-    this._socket.send('installer.install-tooling');
+  async getPrinterPorts(): Promise<PrinterPort[]> {
+    return new Promise(resolve => {
+      const ref = this._nextRef++;
+      this._callbacks.push({
+        ref,
+        callback: (message) => {
+          resolve(message.data.map((name: string) => ({
+            hostId: this.id,
+            address: this.id.split(':')[0] + name,
+            name,
+            inUse: false
+          })));
+        }
+      });
+      this._socket.send(JSON.stringify({ command: 'printer-setup.list-ports', ref }));
+    });
   }
 
-  updatePrinterPorts() {
-    this._socket.send('printer-setup.list-ports');
+  async getKConfig(): Promise<KConfig> {
+    return new Promise(resolve => {
+      const ref = this._nextRef++;
+      this._callbacks.push({
+        ref,
+        callback: (message) => {
+          resolve(message.data);
+        }
+      });
+      this._socket.send(JSON.stringify({ command: 'printer-setup.get-kconfig', ref }));
+    });
+  }
+
+  async getBasicConfig(): Promise<BasicConfigSet> {
+    return new Promise(resolve => {
+      const ref = this._nextRef++;
+      this._callbacks.push({
+        ref,
+        callback: (message) => {
+          resolve(message.data);
+        }
+      });
+      this._socket.send(JSON.stringify({ command: 'printer-setup.get-basic-config', ref }));
+    });
+  }
+
+  installPrinter(config: PrinterInstallConfig) {
+    this._socket.send(JSON.stringify({
+      command: 'printer-setup.install-printer',
+      data: config
+    }));
+  }
+
+  installTooling() {
+    this._socket.send(JSON.stringify({ command: 'installer.install-tooling' }));
   }
 
   turnOnAllPrinters() {
-    this._socket.send('power.turn-on-all');
+    this._socket.send(JSON.stringify({ command: 'power.turn-on-all' }));
   }
 
   turnOffAllPrinters() {
-    this._socket.send('power.turn-off-all');
+    this._socket.send(JSON.stringify({ command: 'power.turn-off-all' }));
   }
 
-  readKConfig() {
-    this._socket.send('printer-setup.get-kconfig');
+  get id(): string {
+    return this._url;
   }
 
   get state(): Observable<RearAdmiralState> {

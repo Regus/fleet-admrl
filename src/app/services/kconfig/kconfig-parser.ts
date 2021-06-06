@@ -1074,7 +1074,7 @@ export class KConfigParser {
   get configOutput(): string {
     let result = '';
     this._configs.forEach(config => {
-      if (config.isEnabled) {
+      if (config.isEnabled && config.value) {
         result += `CONFIG_${config.name}=${config.value}\n`;
       }
     });

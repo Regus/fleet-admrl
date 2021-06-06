@@ -37,20 +37,12 @@ export class CommandService {
     this._rearAdmrlClients[0].installTooling();
   }
 
-  updatePrinterPorts() {
-    this._rearAdmrlClients[0].updatePrinterPorts();
-  }
-
   turnOnAllPrinters() {
     this._rearAdmrlClients[0].turnOnAllPrinters();
   }
 
   turnOffAllPrinters() {
     this._rearAdmrlClients[0].turnOffAllPrinters();
-  }
-
-  readKConfig() {
-    this._rearAdmrlClients[0].readKConfig();
   }
 
   private stateUpdated() {

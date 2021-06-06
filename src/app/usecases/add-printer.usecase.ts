@@ -1,25 +1,22 @@
-import { KconfigOption } from '../services/kconfig/kconfig-parser';
-
-export interface PrinterPort {
-  address: string; // ip/portname
-  name: string;
-  inUse: boolean;
-}
+import { ConsoleLine, PrinterPort } from '../http/rear-admrl-client/rear-admrl-client';
+import { KconfigOption, KConfigParser } from '../services/kconfig/kconfig-parser';
 
 export interface AddPrinterUseCaseActions {
-  flashPrinter(): void;
-  installServices(): void;
-  updateKlipperConfig(config: string): void;
-  updateMoonrakerConfig(config: string): void;
+  beginSession(): void;
+  setInstallPort(address: string): void;
+  setName(name: string): void;
+  setKlipperConfig(config: string): void;
+  setMoonrakerConfig(config: string): void;
+  executeInstall(): void;
 }
 
 export interface AddPrinterUseCaseModel {
+  readonly name: string;
   readonly ports: PrinterPort[];
-  readonly configurationItems: KconfigOption[];
-  readonly flashInProgress: boolean;
-  readonly serviceInstallInProgress: boolean;
+  readonly kconfig?: KConfigParser;
   readonly klipperConfig: string;
   readonly moonrakerConfig: string;
+  readonly consoleLines: ConsoleLine[];
 }
 
 export class AddPrinterUseCase {
@@ -28,30 +25,54 @@ export class AddPrinterUseCase {
     private model: AddPrinterUseCaseModel,
     private actions: AddPrinterUseCaseActions,
   ) {
-
   }
 
-  flashPrinter() {
-    this.actions.flashPrinter();
+  beginSession() {
+    this.actions.beginSession();
   }
 
-  installServices() {
-    this.actions.installServices();
+  executeInstall() {
+    this.actions.executeInstall();
   }
 
-  updateKlipperConfig(config: string) {
-    this.actions.updateKlipperConfig(config);
+  selectPort(port: PrinterPort) {
+    this.actions.setInstallPort(port.address);
   }
 
-  updateMoonrakerConfig(config: string) {
-    this.actions.updateMoonrakerConfig(config);
+  get name(): string {
+    return this.model.name;
+  }
+
+  set name(value: string) {
+    this.actions.setName(value);
   }
 
   get ports(): PrinterPort[] {
     return this.model.ports;
   }
 
-  get configurationItems(): KconfigOption[] {
-    return this.model.configurationItems;
+  get kconfig(): KConfigParser | undefined {
+    return this.model.kconfig;
   }
+
+  get klipperConfig(): string {
+    return this.model.klipperConfig;
+  }
+
+  set klipperConfig(value: string) {
+    this.actions.setKlipperConfig(value);
+  }
+
+  get moonrakerConfig(): string {
+    return this.model.moonrakerConfig;
+  }
+
+  set moonrakerConfig(value: string) {
+    this.actions.setMoonrakerConfig(value);
+  }
+
+  get consoleLines(): ConsoleLine[] {
+    return this.model.consoleLines;
+  }
+
 }

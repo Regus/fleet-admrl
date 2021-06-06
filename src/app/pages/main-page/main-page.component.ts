@@ -1,8 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { RearAdmiralState } from '../../http/rear-admrl-client/rear-admrl-client';
-import { CommandService } from '../../services/command/command.service';
+import { PrinterManager } from '../../services/application/printer-manager/printer-manager.service';
+import { AddPrinterUseCase } from '../../usecases/add-printer.usecase';
 
 export enum TabPages {
   Info = 'info',
@@ -17,10 +16,11 @@ export class MainPageComponent {
   @Input() showAddPrinterDialog = false;
 
   constructor(
-    private commandService: CommandService
+    private printerManager: PrinterManager
   ) { }
 
   openAddPrinterDialog() {
+    this.printerManager.beginSession();
     this.showAddPrinterDialog = true;
   }
 
@@ -28,8 +28,8 @@ export class MainPageComponent {
     this.showAddPrinterDialog = false;
   }
 
-  get state(): Observable<RearAdmiralState[]> {
-    return this.commandService.states;
+  get addPrinterUseCase(): Observable<AddPrinterUseCase> {
+    return this.printerManager.addPrinterUseCase;
   }
 
 }

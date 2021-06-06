@@ -1,0 +1,14 @@
+:host {
+  height: 100%;
+}
+
+.editor {
+  height: 100%;
+  flex-grow: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+ngx-monaco-editor {
+  height: 100%;
+}

@@ -12,7 +12,7 @@
   align-items: center;
 
   .dialog {
-    background-color: white;
+    background-color: black;
     color: black;
     width: 80%;
     height: 80%;
@@ -32,16 +32,53 @@
     .content {
       height: 100%;
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      flex-direction: row;
+      justify-content: flex-start;
 
-      .printer-setup {
-        display: flex;
-        flex-direction: column;
+      .flow-menu {
+        background-color: greenyellow;
+        cursor: pointer;
+        user-select: none;
+        &-item {
+          padding: 5px 20px 5px 5px;
+          &--active {
+            background-color: green;
+            color: white;
+          }
+        }
       }
 
-      .console {
-        height: 150px;
+      .flow-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: white;
+        height: 100%;
+        flex-grow: 1;
+
+        &--hidden {
+          display: none;
+        }
+
+        .skip-firmware-container {
+          padding: 10px;
+        }
+
+        .printer-setup {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 10px;
+          height: 100%;
+          &-name {
+            margin-top: 10px;
+          }
+        }
+
+        .console {
+          height: 100%;
+        }
       }
     }
 

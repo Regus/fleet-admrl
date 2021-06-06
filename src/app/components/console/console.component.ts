@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { ConsoleLine } from '../../http/rear-admrl-client/rear-admrl-client';
 
 @Component({
@@ -7,7 +7,7 @@ import { ConsoleLine } from '../../http/rear-admrl-client/rear-admrl-client';
   styleUrls: ['./console.component.scss']
 })
 export class ConsoleComponent implements AfterViewChecked {
-  private _lastScrollHeight = 0;
+  private _lastLineCount = 0;
 
   @ViewChild('console', { static: true }) consoleElement!: ElementRef;
   @Input() lines: ConsoleLine[] | null = [];
@@ -15,14 +15,15 @@ export class ConsoleComponent implements AfterViewChecked {
   constructor() { }
 
   ngAfterViewChecked(): void {
-    setTimeout(() => {
-      if (this.consoleElement?.nativeElement) {
-        if (this._lastScrollHeight !== this.consoleElement.nativeElement.scrollHeight) {
-          this._lastScrollHeight = this.consoleElement.nativeElement.scrollHeight
+    if (this._lastLineCount !== (this.lines?.length ?? 0)) {
+      this._lastLineCount = this.lines?.length ?? 0;
+      setTimeout(() => {
+        if (this.consoleElement?.nativeElement) {
           this.consoleElement.nativeElement.scrollTop = this.consoleElement.nativeElement.scrollHeight;
         }
-      }
-    });
+      });
+    }
+
   }
 
   trackByLineId(index: number, item: ConsoleLine) {
